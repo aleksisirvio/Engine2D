@@ -30,12 +30,12 @@ private:
 	void drawObjects();
 	void sortObjects();
 
-	static GameLoop instance;
+	static GameLoop sInstance;
 
-	GameState state = GameState::init;
-	bool running = false;
-	char pauseTimer = 0;
+	GameState mState = GameState::init;
+	bool mRunning = false;
+	char mPauseTimer = 0;
 
-	int step_key{ -1 };
-	int draw_key{ -1 };
+	int mUpdateKey{ -1 };
+	int mDrawKey{ -1 };
 };

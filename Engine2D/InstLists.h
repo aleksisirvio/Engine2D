@@ -25,6 +25,8 @@ public:
 	static void add(GameObject* toAdd, int code);
 	static void remove(GameObject* toRemove, int code);
 
+	void clear() const { sMap.clear(); }
+
 private:
-	static InstMap map;
+	static InstMap sMap;
 };

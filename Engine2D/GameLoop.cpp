@@ -1,9 +1,9 @@
 #include <raylib.h>
 
 #include "GameLoop.h"
-#include "InstLists.h"
+#include "Room.h"
 
-GameLoop GameLoop::instance;
+GameLoop GameLoop::sInstance;
 
 /********************************************************************
 GameLoop::get
@@ -12,7 +12,7 @@ Returns the game loop singleton.
 ********************************************************************/
 GameLoop* GameLoop::get()
 {
-	return &instance;
+	return &sInstance;
 }
 
 /********************************************************************
@@ -22,10 +22,10 @@ Run the game loop. Only call once at the beginning.
 ********************************************************************/
 void GameLoop::run()
 {
-	if (running)
+	if (mRunning)
 		return;
 
-	running = true;
+	mRunning = true;
 
 	Rectangle r = { 0.0f, 0.0f, 1920, -1080 };
 	Vector2 v = { 0, 0 };
@@ -44,14 +44,14 @@ void GameLoop::run()
 	while (!WindowShouldClose())
 	{
 		// Update game objects
-		switch (state)
+		switch (mState)
 		{
 		case (GameState::init):
 			initGame();
 			break;
 		case (GameState::play):
-			if (pauseTimer > 0)
-				pauseTimer--;
+			if (mPauseTimer > 0)
+				mPauseTimer--;
 			else
 			{
 				sortObjects();
@@ -89,7 +89,7 @@ Pause game indefinitely.
 ********************************************************************/
 void GameLoop::pause()
 {
-	state = GameState::pause;
+	mState = GameState::pause;
 }
 
 /********************************************************************
@@ -99,7 +99,7 @@ Pause game for as many frames as wanted.
 ********************************************************************/
 void GameLoop::pause(char time)
 {
-	pauseTimer = time;
+	mPauseTimer = time;
 }
 
 /********************************************************************
@@ -109,8 +109,8 @@ Resume game.
 ********************************************************************/
 void GameLoop::unpause()
 {
-	state = GameState::play;
-	pauseTimer = 0;
+	mState = GameState::play;
+	mPauseTimer = 0;
 }
 
 /********************************************************************
@@ -122,22 +122,22 @@ void GameLoop::initGame()
 {
 
 
-	state = GameState::play;
+	mState = GameState::play;
 }
 
 /********************************************************************
 GameLoop::updateObjects
 
-Invokes the step method of game objects in the step list.
+Invokes the update method of game objects in the update list.
 ********************************************************************/
 void GameLoop::updateObjects()
 {
-	auto objs = InstLists::get(step_key);
+	auto objs = InstLists::get(mUpdateKey);
 	if (!objs)
 		return;
 
 	for (auto obj : *objs)
-		obj->step();
+		obj->update();
 }
 
 /********************************************************************
@@ -147,7 +147,7 @@ Invokes the draw method of game objects in the draw list.
 ********************************************************************/
 void GameLoop::drawObjects()
 {
-	auto objs = InstLists::get(draw_key);
+	auto objs = InstLists::get(mDrawKey);
 	if (!objs)
 		return;
 
@@ -162,11 +162,11 @@ Sorts game objects in the draw list according to their depth.
 ********************************************************************/
 void GameLoop::sortObjects()
 {
-	auto objs = InstLists::get(draw_key);
+	auto objs = InstLists::get(mDrawKey);
 	if (!objs)
-		return
+		return;
 
-	objs->sort([](GameObject* a, GameObject* b)
+	objs->sort([](const GameObject* a, const GameObject* b)
 	{
 		return a->getDepth() < b->getDepth();
 	});

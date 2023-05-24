@@ -1,6 +1,6 @@
 #include "InstLists.h"
 
-InstMap InstLists::map;
+InstMap InstLists::sMap;
 
 /********************************************************************
 InstLists::get
@@ -9,10 +9,10 @@ Returns the instance list with the corresponding key.
 ********************************************************************/
 InstList<GameObject*>* InstLists::get(int code)
 {
-	if (!map.count(code))
+	if (!sMap.count(code))
 		return nullptr;
 
-	return &map.at(code);
+	return &sMap.at(code);
 }
 
 /********************************************************************
@@ -23,10 +23,10 @@ code.
 ********************************************************************/
 void InstLists::add(GameObject* toAdd, int code)
 {
-	if (map.count(code))
-		map.at(code).push_back(toAdd);
+	if (sMap.count(code))
+		sMap.at(code).push_back(toAdd);
 	else
-		map.insert({ code, {toAdd} });
+		sMap.insert({ code, {toAdd} });
 }
 
 /********************************************************************
@@ -37,6 +37,6 @@ code.
 ********************************************************************/
 void InstLists::remove(GameObject* toRemove, int code)
 {
-	if (map.count(code))
-		map.at(code).remove(toRemove);
+	if (sMap.count(code))
+		sMap.at(code).remove(toRemove);
 }

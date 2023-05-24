@@ -12,11 +12,11 @@ public:
 	GameObject() = default;
 	virtual ~GameObject() = default;
 
-	virtual void step() { /* Empty */ };
-	virtual void draw() { /* Empty */ };
+	virtual void update()	{ /* Empty */ };
+	virtual void draw()		{ /* Empty */ };
 
-	int getDepth() const { return depth; }
+	int getDepth() const	{ return mDepth; }
 
 private:
-	int depth{ 0 };
+	int mDepth{ 0 };
 };
